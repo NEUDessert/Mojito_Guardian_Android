@@ -72,8 +72,6 @@ public class MonitorActivity extends Activity {
         mUiSettings.setZoomPosition(0);
         mUiSettings.setScaleControlsEnabled(true);
         mUiSettings.setZoomGesturesEnabled(true);
-
-
     }
 
 }
