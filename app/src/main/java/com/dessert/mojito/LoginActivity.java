@@ -35,8 +35,8 @@ public class LoginActivity extends Activity {
         final String phoneNumber = phoneNumberView.getText().toString();
         OkHttpClient mOkHttpClient = new OkHttpClient();
         final Request request = new Request.Builder()
-//                .url("http://192.168.50.183:8082/Mojito/user/contactsLogin.do?custodyCode=" + protectCode + "&phoneNumber=" + phoneNumber)
-                .url("http://192.168.199.146:8081")
+                .url("http://192.168.50.183:8082/Mojito/user/contactsLogin.do?custodyCode=" + protectCode + "&phoneNumber=" + phoneNumber)
+//                .url("http://192.168.199.146:8081")
                 .build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -79,11 +79,6 @@ public class LoginActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_SHORT).show();
                     Looper.loop();
                 }
-                // TODO: JSON Parser
-
-                // If Error = 0: startMonitor & Store Info
-
-                // Else Login Fail.
             }
         });
     }
