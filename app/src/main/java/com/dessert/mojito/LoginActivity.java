@@ -35,13 +35,16 @@ public class LoginActivity extends Activity {
         final String phoneNumber = phoneNumberView.getText().toString();
         OkHttpClient mOkHttpClient = new OkHttpClient();
         final Request request = new Request.Builder()
-                .url("http://192.168.50.183:8082/Mojito/user/contactsLogin.do?custodyCode=" + protectCode + "&phoneNumber=" + phoneNumber)
+//                .url("http://192.168.50.183:8082/Mojito/user/contactsLogin.do?custodyCode=" + protectCode + "&phoneNumber=" + phoneNumber)
+                .url("http://192.168.199.146:8081")
                 .build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Looper.prepare();
+                Toast.makeText(getApplicationContext(), "无法连接到服务器。", Toast.LENGTH_SHORT).show();
+                Looper.loop();
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {

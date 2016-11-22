@@ -1,13 +1,20 @@
 package com.dessert.mojito;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.Toast;
 import com.amap.api.maps.*;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import okhttp3.*;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -89,12 +96,37 @@ public class MonitorActivity extends Activity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Looper.prepare();
+                Toast.makeText(getApplicationContext(), "无法连接到服务器。", Toast.LENGTH_SHORT).show();
+                Looper.loop();
             }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
+                String responseStr = response.body().string();
+                try {
+                    JSONObject result = new JSONObject(responseStr);
+                    if(result.get("error").toString().equals("0")) {
+                        // Clean Preferences
+                        SharedPreferences mSharedPreference = PreferenceManager.getDefaultSharedPreferences(MonitorActivity.this);
+                        SharedPreferences.Editor mEditor = mSharedPreference.edit();
+                        if (mEditor.clear().commit()) {
+                            // TODO: Go back to Login Activity
+                            Intent intent = new Intent();
+                            intent.setClass(MonitorActivity.this, LoginActivity.class);
+                            MonitorActivity.this.startActivity(intent);
+                            MonitorActivity.this.finish();
+                        }
+                    } else {
+                        Looper.prepare();
+                        Toast.makeText(getApplicationContext(), "注销失败。", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Looper.prepare();
+                    Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
             }
         });
     }
