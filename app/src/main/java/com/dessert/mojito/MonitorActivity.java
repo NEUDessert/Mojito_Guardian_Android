@@ -2,11 +2,14 @@ package com.dessert.mojito;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import com.amap.api.maps.*;
-import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import okhttp3.*;
+
+import java.io.IOException;
 
 
 /**
@@ -21,10 +24,14 @@ public class MonitorActivity extends Activity {
     private AMap aMap;
     private UiSettings mUiSettings;
     private LatLng latLng;
+    private OkHttpClient mOkHttpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mOkHttpClient = new OkHttpClient();
+
         setContentView(R.layout.activity_monitor);
         mMapView = (MapView) findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
@@ -74,4 +81,21 @@ public class MonitorActivity extends Activity {
         mUiSettings.setZoomGesturesEnabled(true);
     }
 
+    public void logout(View view) {
+        final Request request = new Request.Builder()
+                .url("http://192.168.50.183:8082/Mojito/user/cLogout.do")
+                .build();
+        Call call = mOkHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            }
+        });
+    }
 }

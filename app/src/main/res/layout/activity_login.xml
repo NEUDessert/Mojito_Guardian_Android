@@ -10,7 +10,7 @@
 		android:layout_marginBottom="56dp" android:id="@+id/login_layout">
 		<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:inputType="number"
 			android:ems="10" android:id="@+id/protect_code" android:layout_centerVertical="true"
-			android:layout_alignStart="@+id/phone_number" android:maxLength="8" android:textSize="16dp" />
+			android:layout_alignStart="@+id/phone_number" android:maxLength="11" android:textSize="16dp" />
 		<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:ems="10" android:id="@+id/phone_number" android:layout_below="@+id/textView1"
 			android:layout_centerHorizontal="true" android:inputType="phone" android:maxLength="11"
 			android:textSize="16dp" />
