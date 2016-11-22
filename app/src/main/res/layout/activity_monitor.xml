@@ -1,25 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent" android:layout_height="match_parent"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
 	android:orientation="vertical">
 	<com.amap.api.maps.MapView
 		android:id="@+id/map"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:layout_weight="1" />
-
-	<LinearLayout
-		android:orientation="vertical"
+	<ScrollView
+		android:id="@+id/infoView"
+		android:layout_weight="1"
 		android:layout_width="match_parent"
-		android:layout_height="0dp"
-		android:layout_gravity="center_horizontal"
-		android:layout_weight="1">
-
-		<TextView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="1231238"
-			android:id="@+id/textView"
-			android:layout_gravity="center_horizontal"/>
-	</LinearLayout>
+		android:layout_height="0dp">s
+		<TableLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+			<TableRow android:layout_width="match_parent" android:layout_height="40dp">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="New Text" android:id="@+id/textView" android:textSize="20sp" />
+			</TableRow>
+			<TableRow android:layout_width="match_parent" android:layout_height="40dp">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="New Text" android:id="@+id/textView" android:textSize="20sp" />
+			</TableRow>
+			<TableRow android:layout_width="match_parent" android:layout_height="40dp">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="New Text" android:id="@+id/textView" android:textSize="20sp" />
+			</TableRow>
+			<TableRow android:layout_width="match_parent" android:layout_height="40dp">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="New Text" android:id="@+id/textView" android:textSize="20sp" />
+			</TableRow>
+			<TableRow android:layout_width="match_parent" android:layout_height="40dp">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="New Text" android:id="@+id/textView" android:textSize="20sp" />
+			</TableRow>
+			<TableRow android:layout_width="match_parent" android:layout_height="40dp">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="New Text" android:id="@+id/textView" android:textSize="20sp" />
+			</TableRow>
+			<TableRow android:layout_width="match_parent" android:layout_height="40dp">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="New Text" android:id="@+id/textView" android:textSize="20sp" />
+			</TableRow>
+			<TableRow android:layout_width="match_parent" android:layout_height="40dp">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="New Text" android:id="@+id/textView" android:textSize="20sp" />
+			</TableRow>
+			<TableRow android:layout_width="match_parent" android:layout_height="40dp">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="New Text" android:id="@+id/textView" android:textSize="20sp" />
+			</TableRow>
+			<TableRow android:layout_width="match_parent" android:layout_height="40dp">
+				<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="New Text" android:id="@+id/textView" android:textSize="20sp" />
+			</TableRow>
+		</TableLayout>
+	</ScrollView>
 </LinearLayout>

@@ -80,25 +80,6 @@
         </service>
         <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
 
-        <!-- User defined. 用户自定义的广播接收器-->
-        <!--<receiver-->
-            <!--android:name="您自己定义的Receiver"-->
-            <!--android:enabled="true">-->
-            <!--<intent-filter>-->
-                <!--&lt;!&ndash;Required 用户注册SDK的intent&ndash;&gt;-->
-                <!--<action android:name="cn.jpush.android.intent.REGISTRATION" />-->
-                <!--&lt;!&ndash;Required 用户接收SDK消息的intent&ndash;&gt;-->
-                <!--<action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />-->
-                <!--&lt;!&ndash;Required 用户接收SDK通知栏信息的intent&ndash;&gt;-->
-                <!--<action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />-->
-                <!--&lt;!&ndash;Required 用户打开自定义通知栏的intent&ndash;&gt;-->
-                <!--<action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />-->
-                <!--&lt;!&ndash; 接收网络变化 连接/断开 since 1.6.3 &ndash;&gt;-->
-                <!--<action android:name="cn.jpush.android.intent.CONNECTION" />-->
-                <!--<category android:name="您应用的包名" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
-
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="e448d42edb38212d237136301c12d63c"/>
@@ -120,6 +101,11 @@
             android:theme="@style/AppTheme" >
 
         </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" >
+        ></activity>
     </application>
 
 </manifest>

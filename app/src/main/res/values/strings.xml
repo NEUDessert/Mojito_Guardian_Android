@@ -1,4 +1,7 @@
 <resources>
 	<string name="app_name">Mojito</string>
 	<string name="hello_world">Hello world!</string>
+	<string name="protect_code">监护人代码</string>
+	<string name="guardian_phone">监护人手机号</string>
+	<string name="login_button">登录</string>
 </resources>

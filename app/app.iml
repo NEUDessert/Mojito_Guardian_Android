@@ -89,7 +89,9 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="okhttp-3.4.2" level="project" />
     <orderEntry type="library" exported="" name="jpush-2.2.0" level="project" />
     <orderEntry type="library" exported="" name="AMap3DMap_4.1.2_AMapNavi_1.9.3_AMapLocation_3.1.0_20161104" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.11.0" level="project" />
   </component>
 </module>
