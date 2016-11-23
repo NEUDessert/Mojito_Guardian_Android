@@ -1,24 +1,26 @@
 package com.dessert.mojito;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.os.Bundle;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 import com.amap.api.maps.*;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
-import com.amap.api.maps.model.Text;
 import okhttp3.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Set;
 
 
 /**
@@ -34,17 +36,32 @@ public class MonitorActivity extends Activity {
     private UiSettings mUiSettings;
     private LatLng latLng;
     private OkHttpClient mOkHttpClient;
+    private TagAliasCallback mTagAliasCallback;
+    private JPushReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         nameTextView = (TextView)findViewById(R.id.nameText);
         statusTextView = (TextView)findViewById(R.id.statusText);
         rateTextView = (TextView)findViewById(R.id.rateText);
         recordTextView = (TextView)findViewById(R.id.recordText);
 
+        JPushInterface.setDebugMode(true); // TODO: Change Mode when Publish
+        JPushInterface.init(this);
+
         mOkHttpClient = new OkHttpClient();
+        mTagAliasCallback = new TagAliasCallback() {
+            @Override
+            public void gotResult(int i, String s, Set<String> set) {
+                if(i == 0) {
+                    Log.i("JPush", "Alias: " + s);
+                } else {
+                    Log.w("JPush", "Error Code: " + i);
+                }
+            }
+        };
+//        /*
         final Request request = new Request.Builder()
                 .url("http://192.168.50.183:8082/Mojito/user/getBasicInfo.do")
                 .build();
@@ -66,6 +83,18 @@ public class MonitorActivity extends Activity {
                     statusTextView.setText(result.get("status") + "");
                     rateTextView.setText(result.get("heartRate") + " RPM");
                     recordTextView.setText(result.get("recordCount") + " 条记录");
+                    JPushInterface.setAlias(getApplicationContext(), result.get("phoneNumber") + "", mTagAliasCallback);
+
+                    mReceiver = new JPushReceiver();
+                    IntentFilter filter = new IntentFilter();
+                    filter.addAction(JPushInterface.ACTION_NOTIFICATION_RECEIVED);
+                    registerReceiver(mReceiver, filter);
+                    mReceiver.SetOnUpdateUIListenner(new UpdateUIListenner() {
+                        @Override
+                        public void UpdateUI(String str) {
+                            statusTextView.setText("异常");
+                        }
+                    });
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -75,6 +104,7 @@ public class MonitorActivity extends Activity {
                 }
             }
         });
+//        */
 
         setContentView(R.layout.activity_monitor);
         mMapView = (MapView) findViewById(R.id.map);
@@ -87,12 +117,14 @@ public class MonitorActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
+        unregisterReceiver(mReceiver);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mMapView.onResume();
+        JPushInterface.resumePush(getApplicationContext());
     }
 
     @Override
@@ -113,12 +145,13 @@ public class MonitorActivity extends Activity {
             mUiSettings = aMap.getUiSettings();
 
         }
-        latLng = new LatLng(39, 116);
+        latLng = new LatLng(41.656321, 123.425986, true); // LatLng( y, x)
         final Marker marker = aMap.addMarker(new MarkerOptions().
                 position(latLng).
                 title("用户当前位置").
                 snippet("DefaultMarker"));
         aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setZoomPosition(0);
         mUiSettings.setScaleControlsEnabled(true);
@@ -152,6 +185,7 @@ public class MonitorActivity extends Activity {
                             intent.setClass(MonitorActivity.this, LoginActivity.class);
                             MonitorActivity.this.startActivity(intent);
                             MonitorActivity.this.finish();
+                            JPushInterface.stopPush(getApplicationContext());
                         }
                     } else {
                         Looper.prepare();

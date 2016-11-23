@@ -14,8 +14,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initialize();
-        JPushInterface.setDebugMode(true); // TODO: Change Mode when Publish
-        JPushInterface.init(this);
     }
     private void initialize() {
         SharedPreferences mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
