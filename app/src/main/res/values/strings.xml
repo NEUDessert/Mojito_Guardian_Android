@@ -8,4 +8,5 @@
 	<string name="protect_hint">请输您的 11 位 监护代码</string>
 	<string name="guardian_hint">请输入您的手机号</string>
 	<string name="login_button">登录</string>
+	<string name="loading">加载中&#8230;</string>
 </resources>

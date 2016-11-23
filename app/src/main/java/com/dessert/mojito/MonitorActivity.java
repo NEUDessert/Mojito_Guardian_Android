@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.amap.api.maps.*;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.Text;
 import okhttp3.*;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +29,7 @@ import java.io.IOException;
 public class MonitorActivity extends Activity {
 
     MapView mMapView = null;
-
+    private TextView nameTextView, statusTextView, rateTextView, recordTextView;
     private AMap aMap;
     private UiSettings mUiSettings;
     private LatLng latLng;
@@ -37,7 +39,42 @@ public class MonitorActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        nameTextView = (TextView)findViewById(R.id.nameText);
+        statusTextView = (TextView)findViewById(R.id.statusText);
+        rateTextView = (TextView)findViewById(R.id.rateText);
+        recordTextView = (TextView)findViewById(R.id.recordText);
+
         mOkHttpClient = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url("http://192.168.50.183:8082/Mojito/user/getBasicInfo.do")
+                .build();
+        Call call = mOkHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Looper.prepare();
+                Toast.makeText(getApplicationContext(), "无法连接到服务器。", Toast.LENGTH_LONG ).show();
+                Looper.loop();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+
+                    JSONObject result = new JSONObject(response.body().string());
+                    nameTextView.setText(result.get("name") + "");
+                    statusTextView.setText(result.get("status") + "");
+                    rateTextView.setText(result.get("heartRate") + " RPM");
+                    recordTextView.setText(result.get("recordCount") + " 条记录");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Looper.prepare();
+                    Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_SHORT ).show();
+                    Looper.loop();
+                }
+            }
+        });
 
         setContentView(R.layout.activity_monitor);
         mMapView = (MapView) findViewById(R.id.map);
