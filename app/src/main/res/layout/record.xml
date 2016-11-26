@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical"
+	android:layout_width="match_parent" android:layout_height="wrap_content">
+
+	<TextView android:text="@string/timeTitle" android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:id="@+id/timeTitle" android:paddingLeft="10dp" android:textSize="16sp" />
+	<TextView android:text="TextView" android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:id="@+id/time" android:gravity="center" android:textSize="20sp" />
+	<TextView android:text="@string/contentTitle" android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:id="@+id/contentTitle" android:paddingLeft="10dp" android:textSize="16sp" />
+	<TextView android:text="TextView" android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:id="@+id/content" android:gravity="center" android:textSize="20sp" />
+</LinearLayout>

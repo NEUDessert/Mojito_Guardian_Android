@@ -245,7 +245,6 @@ public class MonitorActivity extends Activity {
                         SharedPreferences mSharedPreference = PreferenceManager.getDefaultSharedPreferences(MonitorActivity.this);
                         SharedPreferences.Editor mEditor = mSharedPreference.edit();
                         if (mEditor.clear().commit()) {
-                            // TODO: Go back to Login Activity
                             Intent intent = new Intent();
                             intent.setClass(MonitorActivity.this, LoginActivity.class);
                             MonitorActivity.this.startActivity(intent);

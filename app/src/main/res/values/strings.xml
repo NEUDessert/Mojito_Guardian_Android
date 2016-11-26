@@ -13,4 +13,6 @@
 	<string name="status_text">%1$s</string>
 	<string name="record_text">共有 %1$d 条记录</string>
 	<string name="loading">加载中&#8230;</string>
+	<string name="contentTitle">详细信息</string>
+	<string name="timeTitle">时间</string>
 </resources>
