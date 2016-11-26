@@ -2,7 +2,6 @@ package com.dessert.mojito;
 
 import android.app.Activity;
 import android.content.*;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -211,35 +210,6 @@ public class MonitorActivity extends Activity {
             mUiSettings = aMap.getUiSettings();
 
         }
-
-//        locY = 41.656321;
-//        locX = 123.425986;
-//
-//        final Request request = new Request.Builder()
-//                .url("http://192.168.50.183:8082/Mojito/user/getLocation.do")
-//                .build();
-//        Call call = mOkHttpClient.newCall(request);
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                Looper.prepare();
-//                Toast.makeText(getApplicationContext(), "无法连接到服务器。", Toast.LENGTH_LONG ).show();
-//                Looper.loop();
-//            }
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                try {
-//                    JSONObject result = new JSONObject(response.body().string());
-//                    locX = Double.parseDouble(result.get("locX").toString());
-//                    locY = Double.parseDouble(result.get("locY").toString());
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                    Looper.prepare();
-//                    Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_SHORT ).show();
-//                    Looper.loop();
-//                }
-//            }
-//        });
         LatLng latLng = new LatLng(locY, locX);
         final Marker marker = aMap.addMarker(new MarkerOptions().
                 position(latLng).
