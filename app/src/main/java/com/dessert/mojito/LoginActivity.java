@@ -6,13 +6,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import okhttp3.*;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 
 /**
@@ -22,7 +22,6 @@ import java.io.IOException;
 public class LoginActivity extends Activity {
 
     private View loginView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,10 +32,10 @@ public class LoginActivity extends Activity {
         TextView phoneNumberView = (TextView)findViewById(R.id.phone_number);
         final String protectCode = protectCodeView.getText().toString();
         final String phoneNumber = phoneNumberView.getText().toString();
-        OkHttpClient mOkHttpClient = new OkHttpClient();
+        OkHttpClient mOkHttpClient = OkHttpUtils.getInstance().getOkHttpClient();
         final Request request = new Request.Builder()
-//                .url("http://192.168.50.183:8082/Mojito/user/contactsLogin.do?custodyCode=" + protectCode + "&phoneNumber=" + phoneNumber)
-                .url("http://192.168.50.181:8081")
+                .url("http://192.168.50.183:8082/Mojito/user/contactsLogin.do?custodyCode=" + protectCode + "&phoneNumber=" + phoneNumber)
+//                .url("http://192.168.50.181:8081")
                 .build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {

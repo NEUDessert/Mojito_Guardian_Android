@@ -12,14 +12,14 @@ import cn.jpush.android.api.JPushInterface;
  * Created by Lawrence on 23/11/2016.
  *
  */
-interface UpdateUIListenner {
+interface UpdateUIListener {
 
-    void UpdateUI(String str);
+    void updateUI(String str);
 }
 
 public class JPushReceiver extends BroadcastReceiver {
 
-    UpdateUIListenner updateUIListenner;
+    private UpdateUIListener updateUIListener;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -28,7 +28,7 @@ public class JPushReceiver extends BroadcastReceiver {
         }
     }
 
-    public void SetOnUpdateUIListenner(UpdateUIListenner updateUIListenner) {
-        this.updateUIListenner = updateUIListenner;
+    void SetOnUpdateUIListener(UpdateUIListener updateUIListener) {
+        this.updateUIListener = updateUIListener;
     }
 }

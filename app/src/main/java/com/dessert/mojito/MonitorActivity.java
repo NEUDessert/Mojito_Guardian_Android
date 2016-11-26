@@ -32,9 +32,9 @@ public class MonitorActivity extends Activity {
 
     MapView mMapView = null;
     private TextView nameTextView, statusTextView, rateTextView, recordTextView;
+    private String nameText, statusText, rateText, recordText;
     private AMap aMap;
     private UiSettings mUiSettings;
-    private LatLng latLng;
     private OkHttpClient mOkHttpClient;
     private TagAliasCallback mTagAliasCallback;
     private JPushReceiver mReceiver;
@@ -42,15 +42,29 @@ public class MonitorActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_monitor);
+        mMapView = (MapView) findViewById(R.id.map);
+        mMapView.onCreate(savedInstanceState);
+
         nameTextView = (TextView)findViewById(R.id.nameText);
         statusTextView = (TextView)findViewById(R.id.statusText);
         rateTextView = (TextView)findViewById(R.id.rateText);
         recordTextView = (TextView)findViewById(R.id.recordText);
 
+        nameText = getResources().getString(R.string.name_text);
+        statusText = getResources().getString(R.string.status_text);
+        rateText = getResources().getString(R.string.rate_text);
+        recordText = getResources().getString(R.string.record_text);
+
+
+
+        // Location.
+
         JPushInterface.setDebugMode(true); // TODO: Change Mode when Publish
         JPushInterface.init(this);
 
-        mOkHttpClient = new OkHttpClient();
+        mOkHttpClient = OkHttpUtils.getInstance().getOkHttpClient();
         mTagAliasCallback = new TagAliasCallback() {
             @Override
             public void gotResult(int i, String s, Set<String> set) {
@@ -77,21 +91,29 @@ public class MonitorActivity extends Activity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try {
+                    String str = response.body().string();
+                    Log.i("JSON", str);
+                    JSONObject result = new JSONObject(str);
 
-                    JSONObject result = new JSONObject(response.body().string());
-                    nameTextView.setText(result.get("name") + "");
-                    statusTextView.setText(result.get("status") + "");
-                    rateTextView.setText(result.get("heartRate") + " RPM");
-                    recordTextView.setText(result.get("recordCount") + " 条记录");
-                    JPushInterface.setAlias(getApplicationContext(), result.get("phoneNumber") + "", mTagAliasCallback);
+                    nameText = String.format(nameText, result.get("name").toString());
+                    statusText = String.format(statusText, result.get("status").toString());
+                    rateText = String.format(rateText, Integer.parseInt(result.get("heartRate").toString()));
+                    recordText = String.format(recordText, Integer.parseInt(result.get("recordCount").toString()));
+
+                    nameTextView.setText(nameText);
+                    statusTextView.setText(statusText);
+                    rateTextView.setText(rateText);
+                    recordTextView.setText(recordText);
+                    Log.i("AAAAAAA", result.get("phoneNumber").toString());
+                    JPushInterface.setAlias(getApplicationContext(), result.get("phoneNumber").toString(), mTagAliasCallback);
 
                     mReceiver = new JPushReceiver();
                     IntentFilter filter = new IntentFilter();
                     filter.addAction(JPushInterface.ACTION_NOTIFICATION_RECEIVED);
                     registerReceiver(mReceiver, filter);
-                    mReceiver.SetOnUpdateUIListenner(new UpdateUIListenner() {
+                    mReceiver.SetOnUpdateUIListener(new UpdateUIListener() {
                         @Override
-                        public void UpdateUI(String str) {
+                        public void updateUI(String str) {
                             statusTextView.setText("异常");
                         }
                     });
@@ -104,20 +126,39 @@ public class MonitorActivity extends Activity {
                 }
             }
         });
+
+        final Request requestPos = new Request.Builder()
+                .url("http://192.168.50.183:8082/Mojito/user/getLocation.do")
+                .build();
+        Call callPos = mOkHttpClient.newCall(requestPos);
+        callPos.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    JSONObject result = new JSONObject(response.body().string());
+                    double locX = Double.parseDouble(result.get("locX").toString());
+                    double locY = Double.parseDouble(result.get("locY").toString());
+                    setLocation(locX, locY);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 //        */
-
-        setContentView(R.layout.activity_monitor);
-        mMapView = (MapView) findViewById(R.id.map);
-        mMapView.onCreate(savedInstanceState);
-        init();
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
-        unregisterReceiver(mReceiver);
+        if(mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
     }
 
     @Override
@@ -139,23 +180,52 @@ public class MonitorActivity extends Activity {
         mMapView.onSaveInstanceState(outState);
     }
 
-    private void init() {
+    private void setLocation(double locX, double locY) {
         if (aMap == null) {
             aMap = mMapView.getMap();
             mUiSettings = aMap.getUiSettings();
 
         }
-        latLng = new LatLng(41.656321, 123.425986, true); // LatLng( y, x)
+
+//        locY = 41.656321;
+//        locX = 123.425986;
+//
+//        final Request request = new Request.Builder()
+//                .url("http://192.168.50.183:8082/Mojito/user/getLocation.do")
+//                .build();
+//        Call call = mOkHttpClient.newCall(request);
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                Looper.prepare();
+//                Toast.makeText(getApplicationContext(), "无法连接到服务器。", Toast.LENGTH_LONG ).show();
+//                Looper.loop();
+//            }
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                try {
+//                    JSONObject result = new JSONObject(response.body().string());
+//                    locX = Double.parseDouble(result.get("locX").toString());
+//                    locY = Double.parseDouble(result.get("locY").toString());
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                    Looper.prepare();
+//                    Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_SHORT ).show();
+//                    Looper.loop();
+//                }
+//            }
+//        });
+        LatLng latLng = new LatLng(locY, locX);
         final Marker marker = aMap.addMarker(new MarkerOptions().
                 position(latLng).
-                title("用户当前位置").
-                snippet("DefaultMarker"));
+                title("用户当前位置"));
         aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
         aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setZoomPosition(0);
         mUiSettings.setScaleControlsEnabled(true);
         mUiSettings.setZoomGesturesEnabled(true);
+
     }
 
     public void logout(View view) {
