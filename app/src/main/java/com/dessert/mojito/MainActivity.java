@@ -46,11 +46,12 @@ public class MainActivity extends Activity {
                     System.exit(1);
                     Looper.loop();
                 }
+
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     try {
                         JSONObject result = new JSONObject(response.body().string());
-                        if(result.get("error").toString().equals("0")) {
+                        if (result.get("error").toString().equals("0")) {
                             startMonitor();
                         }
                     } catch (JSONException e) {
@@ -65,6 +66,7 @@ public class MainActivity extends Activity {
         }
         finish();
     }
+
     private void startMonitor() {
         Intent intent = new Intent();
         intent.setClass(MainActivity.this, MonitorActivity.class);

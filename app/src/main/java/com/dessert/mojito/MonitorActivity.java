@@ -58,7 +58,6 @@ public class MonitorActivity extends Activity {
         recordText = getResources().getString(R.string.record_text);
 
 
-
         // Location.
 
         JPushInterface.setDebugMode(true); // TODO: Change Mode when Publish
@@ -74,7 +73,7 @@ public class MonitorActivity extends Activity {
                     Log.w("JPush", "Error Code: " + i);
                 }
             }
-        };
+        }; // for debug
 //        /*
         final Request request = new Request.Builder()
                 .url("http://192.168.50.183:8082/Mojito/user/getBasicInfo.do")
@@ -156,7 +155,7 @@ public class MonitorActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
-        if(mReceiver != null) {
+        if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
     }
