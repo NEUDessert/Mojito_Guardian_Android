@@ -20,8 +20,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         initialize();
+        setContentView(R.layout.activity_main);
+
     }
     private void initialize() {
         SharedPreferences mSharedPreference = PreferenceManager.getDefaultSharedPreferences(this);

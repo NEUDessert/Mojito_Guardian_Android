@@ -3,7 +3,9 @@ package com.dessert.mojito;
 import android.app.Activity;
 import android.content.*;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +33,8 @@ import java.util.Set;
 public class MonitorActivity extends Activity {
 
     MapView mMapView = null;
+    private static final int PUSH_RECEIVED = 0;
+    private static final int GET_BASIC_INFO = 1;
     private TextView nameTextView, statusTextView, rateTextView, recordTextView;
     private String nameText, statusText, rateText, recordText;
     private AMap aMap;
@@ -38,6 +42,20 @@ public class MonitorActivity extends Activity {
     private OkHttpClient mOkHttpClient;
     private TagAliasCallback mTagAliasCallback;
     private JPushReceiver mReceiver;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            if(message.what == PUSH_RECEIVED) {
+                statusTextView.setText("异常");
+            }
+            if(message.what == GET_BASIC_INFO) {
+                nameTextView.setText(nameText);
+                statusTextView.setText(statusText);
+                rateTextView.setText(rateText);
+                recordTextView.setText(recordText);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,13 +116,11 @@ public class MonitorActivity extends Activity {
                     statusText = String.format(statusText, result.get("status").toString());
                     rateText = String.format(rateText, Integer.parseInt(result.get("heartRate").toString()));
                     recordText = String.format(recordText, Integer.parseInt(result.get("recordCount").toString()));
-
-                    nameTextView.setText(nameText);
-                    statusTextView.setText(statusText);
-                    rateTextView.setText(rateText);
-                    recordTextView.setText(recordText);
-                    Log.i("AAAAAAA", result.get("phoneNumber").toString());
                     JPushInterface.setAlias(getApplicationContext(), result.get("phoneNumber").toString(), mTagAliasCallback);
+
+                    Message message = new Message();
+                    message.what = GET_BASIC_INFO;
+                    handler.sendMessage(message);
 
                     mReceiver = new JPushReceiver();
                     IntentFilter filter = new IntentFilter();
@@ -113,7 +129,9 @@ public class MonitorActivity extends Activity {
                     mReceiver.SetOnUpdateUIListener(new UpdateUIListener() {
                         @Override
                         public void updateUI(String str) {
-                            statusTextView.setText("异常");
+                            Message message = new Message();
+                            message.what = PUSH_RECEIVED;
+                            handler.sendMessage(message);
                         }
                     });
 

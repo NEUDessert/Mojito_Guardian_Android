@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical"
+	android:layout_width="match_parent" android:layout_height="match_parent">
+
+	<TextView android:text="异常信息" android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:id="@+id/recordHeader" android:textAlignment="center" android:textSize="30sp"
+		android:gravity="center" android:layout_marginBottom="10dp" android:layout_marginTop="10dp" />
+	<ImageView android:layout_width="match_parent" android:layout_height="1dp"
+		android:id="@+id/imageView4" android:background="#DDDDDD" />
+	<ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
+		android:layout_marginTop="10dp">
+		<LinearLayout android:layout_width="match_parent" android:orientation="vertical" android:layout_height="wrap_content">
+			<TextView android:text="时间" android:layout_width="match_parent" android:layout_height="wrap_content"
+				android:id="@+id/textView9" android:layout_weight="1" android:paddingLeft="10dp" android:textSize="16sp" />
+			<TextView android:text="14:30" android:layout_width="match_parent" android:layout_height="wrap_content"
+				android:id="@+id/textView10" android:layout_weight="2" android:textAlignment="center" android:textSize="20sp"
+				android:gravity="center" />
+			<TextView android:text="异常信息" android:layout_width="match_parent" android:layout_height="wrap_content"
+				android:id="@+id/textView11" android:layout_weight="1" android:paddingLeft="10dp" android:textSize="16sp" />
+			<TextView android:text="心律不齐" android:layout_width="match_parent" android:layout_height="wrap_content"
+				android:id="@+id/textView12" android:layout_weight="2" android:textAlignment="center" android:textSize="20sp"
+				android:gravity="center" />
+		</LinearLayout>
+	</ScrollView>
+</LinearLayout>
