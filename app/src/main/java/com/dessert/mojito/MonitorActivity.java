@@ -2,6 +2,7 @@ package com.dessert.mojito;
 
 import android.app.Activity;
 import android.content.*;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -48,8 +49,8 @@ public class MonitorActivity extends Activity {
         @Override
         public void handleMessage(Message message) {
             if(message.what == PUSH_RECEIVED) {
-                Log.i("123", "123");
                 statusTextView.setText("异常");
+                statusTextView.setTextColor(0xFFFF0000);
             }
             if(message.what == GET_BASIC_INFO) {
                 nameTextView.setText(nameText);
