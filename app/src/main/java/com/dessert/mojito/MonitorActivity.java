@@ -35,17 +35,20 @@ public class MonitorActivity extends Activity {
     MapView mMapView = null;
     private static final int PUSH_RECEIVED = 0;
     private static final int GET_BASIC_INFO = 1;
+    private static final int GET_LOCATION = 2;
     private TextView nameTextView, statusTextView, rateTextView, recordTextView;
     private String nameText, statusText, rateText, recordText;
     private AMap aMap;
     private UiSettings mUiSettings;
     private OkHttpClient mOkHttpClient;
     private TagAliasCallback mTagAliasCallback;
-    private JPushReceiver mReceiver;
+    private MyPushReceiver mReceiver;
+    private double locX, locY;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
             if(message.what == PUSH_RECEIVED) {
+                Log.i("123", "123");
                 statusTextView.setText("异常");
             }
             if(message.what == GET_BASIC_INFO) {
@@ -54,9 +57,11 @@ public class MonitorActivity extends Activity {
                 rateTextView.setText(rateText);
                 recordTextView.setText(recordText);
             }
+            if(message.what == GET_LOCATION) {
+                setLocation(locX, locY);
+            }
         }
     };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +80,19 @@ public class MonitorActivity extends Activity {
         rateText = getResources().getString(R.string.rate_text);
         recordText = getResources().getString(R.string.record_text);
 
+        BroadcastReceiver mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent.getAction().equals("com.dessert.mojito.CHANGE_STATUS")) {
+                    Message message = new Message();
+                    message.what = PUSH_RECEIVED;
+                    handler.sendMessage(message);
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.dessert.mojito.CHANGE_STATUS");
+        registerReceiver(mReceiver, filter);
 
         // Location.
 
@@ -122,19 +140,6 @@ public class MonitorActivity extends Activity {
                     message.what = GET_BASIC_INFO;
                     handler.sendMessage(message);
 
-                    mReceiver = new JPushReceiver();
-                    IntentFilter filter = new IntentFilter();
-                    filter.addAction(JPushInterface.ACTION_NOTIFICATION_RECEIVED);
-                    registerReceiver(mReceiver, filter);
-                    mReceiver.SetOnUpdateUIListener(new UpdateUIListener() {
-                        @Override
-                        public void updateUI(String str) {
-                            Message message = new Message();
-                            message.what = PUSH_RECEIVED;
-                            handler.sendMessage(message);
-                        }
-                    });
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Looper.prepare();
@@ -158,9 +163,11 @@ public class MonitorActivity extends Activity {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     JSONObject result = new JSONObject(response.body().string());
-                    double locX = Double.parseDouble(result.get("locX").toString());
-                    double locY = Double.parseDouble(result.get("locY").toString());
-                    setLocation(locX, locY);
+                    locX = Double.parseDouble(result.get("locX").toString());
+                    locY = Double.parseDouble(result.get("locY").toString());
+                    Message message = new Message();
+                    message.what = GET_LOCATION;
+                    handler.sendMessage(message);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
