@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
             String protectCode = mSharedPreference.getString("protectCode", "0");
             OkHttpClient mOkHttpClient = OkHttpUtils.getInstance().getOkHttpClient();
             final Request request = new Request.Builder()
-                    .url("http://192.168.50.183:8082/Mojito/user/contactsLogin.do?custodyCode=" + protectCode + "&phoneNumber=" + phoneNumber)
+                    .url("http://192.168.50.197:8082/Mojito/user/contactsLogin.do?custodyCode=" + protectCode + "&phoneNumber=" + phoneNumber)
                     .build();
             Call call = mOkHttpClient.newCall(request);
             call.enqueue(new Callback() {

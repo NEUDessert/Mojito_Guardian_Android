@@ -112,7 +112,7 @@ public class MonitorActivity extends Activity {
         }; // for debug
 //        /*
         final Request request = new Request.Builder()
-                .url("http://192.168.50.183:8082/Mojito/user/getBasicInfo.do")
+                .url("http://192.168.50.197:8082/Mojito/user/getBasicInfo.do")
                 .build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -150,7 +150,7 @@ public class MonitorActivity extends Activity {
         });
 
         final Request requestPos = new Request.Builder()
-                .url("http://192.168.50.183:8082/Mojito/user/getLocation.do")
+                .url("http://192.168.50.197:8082/Mojito/user/getLocation.do")
                 .build();
         Call callPos = mOkHttpClient.newCall(requestPos);
         callPos.enqueue(new Callback() {
@@ -178,11 +178,9 @@ public class MonitorActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        unregisterReceiver(mReceiver);
         super.onDestroy();
         mMapView.onDestroy();
-        if (mReceiver != null) {
-            unregisterReceiver(mReceiver);
-        }
     }
 
     @Override
@@ -223,9 +221,15 @@ public class MonitorActivity extends Activity {
 
     }
 
+    public void showRecord(View view) {
+        Intent intent = new Intent();
+        intent.setClass(MonitorActivity.this, RecordActivity.class);
+        MonitorActivity.this.startActivity(intent);
+    }
+
     public void logout(View view) {
         final Request request = new Request.Builder()
-                .url("http://192.168.50.183:8082/Mojito/user/cLogout.do")
+                .url("http://192.168.50.197:8082/Mojito/user/cLogout.do")
                 .build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
