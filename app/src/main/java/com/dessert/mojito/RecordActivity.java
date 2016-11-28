@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.*;
 
 /**
@@ -65,8 +66,10 @@ public class RecordActivity extends Activity {
                          for(int i = 0; i < result.length(); i++) {
                              JSONObject piece = result.getJSONObject(i);
                              map = new HashMap<>();
-                             map.put("alertTime", new Date(Long.parseLong(piece.get("time").toString())).toString());
-                             map.put("type", piece.get("info").toString());
+                             DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
+                             Date time = new Date(Long.parseLong(piece.getString("alertTime")));
+                             map.put("time", format.format(time));
+                             map.put("content", piece.get("type").toString());
                              list.add(map);
                          }
 

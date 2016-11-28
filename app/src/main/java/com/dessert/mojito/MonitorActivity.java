@@ -42,7 +42,7 @@ public class MonitorActivity extends Activity {
     private UiSettings mUiSettings;
     private OkHttpClient mOkHttpClient;
     private TagAliasCallback mTagAliasCallback;
-    private MyPushReceiver mReceiver;
+    private BroadcastReceiver mReceiver;
     private double locX, locY;
     private Handler handler = new Handler() {
         @Override
@@ -80,7 +80,7 @@ public class MonitorActivity extends Activity {
         rateText = getResources().getString(R.string.rate_text);
         recordText = getResources().getString(R.string.record_text);
 
-        BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if(intent.getAction().equals("com.dessert.mojito.CHANGE_STATUS")) {
@@ -178,7 +178,9 @@ public class MonitorActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(mReceiver);
+        if(mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
         super.onDestroy();
         mMapView.onDestroy();
     }
