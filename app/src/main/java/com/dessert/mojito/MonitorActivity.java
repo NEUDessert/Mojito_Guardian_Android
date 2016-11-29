@@ -53,6 +53,7 @@ public class MonitorActivity extends Activity {
             }
             if(message.what == GET_BASIC_INFO) {
                 nameTextView.setText(nameText);
+                if(statusText.equals("")) statusText = "未知";
                 statusTextView.setText(statusText);
                 rateTextView.setText(rateText);
                 recordTextView.setText(recordText);
@@ -62,6 +63,39 @@ public class MonitorActivity extends Activity {
             }
         }
     };
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            handler.postDelayed(this, 1000);
+            Log.i("REQUEST", "123");
+            final Request requestPos = new Request.Builder()
+                    .url(OkHttpUtils.DOMAIN + "user/getLocation.do")
+                    .build();
+            Call callPos = mOkHttpClient.newCall(requestPos);
+            callPos.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try {
+                        JSONObject result = new JSONObject(response.body().string());
+                        locX = Double.parseDouble(result.get("locX").toString());
+                        locY = Double.parseDouble(result.get("locY").toString());
+                        Message message = new Message();
+                        message.what = GET_LOCATION;
+                        handler.sendMessage(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +144,6 @@ public class MonitorActivity extends Activity {
                 }
             }
         }; // for debug
-//        /*
         final Request request = new Request.Builder()
                 .url(OkHttpUtils.DOMAIN + "user/getBasicInfo.do")
                 .build();
@@ -148,32 +181,7 @@ public class MonitorActivity extends Activity {
                 }
             }
         });
-
-        final Request requestPos = new Request.Builder()
-                .url(OkHttpUtils.DOMAIN + "user/getLocation.do")
-                .build();
-        Call callPos = mOkHttpClient.newCall(requestPos);
-        callPos.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    JSONObject result = new JSONObject(response.body().string());
-                    locX = Double.parseDouble(result.get("locX").toString());
-                    locY = Double.parseDouble(result.get("locY").toString());
-                    Message message = new Message();
-                    message.what = GET_LOCATION;
-                    handler.sendMessage(message);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-//        */
+        handler.postDelayed(runnable, 1000);
     }
 
     @Override
@@ -181,6 +189,7 @@ public class MonitorActivity extends Activity {
         if(mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
+        handler.removeCallbacks(runnable);
         super.onDestroy();
         mMapView.onDestroy();
     }
