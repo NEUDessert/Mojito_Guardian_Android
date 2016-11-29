@@ -112,7 +112,7 @@ public class MonitorActivity extends Activity {
         }; // for debug
 //        /*
         final Request request = new Request.Builder()
-                .url("http://192.168.50.197:8082/Mojito/user/getBasicInfo.do")
+                .url(OkHttpUtils.DOMAIN + "user/getBasicInfo.do")
                 .build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -150,7 +150,7 @@ public class MonitorActivity extends Activity {
         });
 
         final Request requestPos = new Request.Builder()
-                .url("http://192.168.50.197:8082/Mojito/user/getLocation.do")
+                .url(OkHttpUtils.DOMAIN + "user/getLocation.do")
                 .build();
         Call callPos = mOkHttpClient.newCall(requestPos);
         callPos.enqueue(new Callback() {
@@ -231,7 +231,7 @@ public class MonitorActivity extends Activity {
 
     public void logout(View view) {
         final Request request = new Request.Builder()
-                .url("http://192.168.50.197:8082/Mojito/user/cLogout.do")
+                .url(OkHttpUtils.DOMAIN + "user/cLogout.do")
                 .build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {

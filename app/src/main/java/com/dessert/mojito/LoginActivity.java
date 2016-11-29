@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 import android.widget.Toast;
 import okhttp3.*;
@@ -33,9 +34,14 @@ public class LoginActivity extends Activity {
         final String protectCode = protectCodeView.getText().toString();
         final String phoneNumber = phoneNumberView.getText().toString();
         OkHttpClient mOkHttpClient = OkHttpUtils.getInstance().getOkHttpClient();
+        final RequestBody body = new FormBody.Builder()
+                .addEncoded("custodyCode", protectCode)
+                .addEncoded("phoneNumber", phoneNumber)
+                .build();
         final Request request = new Request.Builder()
-                .url("http://192.168.50.197:8082/Mojito/user/contactsLogin.do?custodyCode=" + protectCode + "&phoneNumber=" + phoneNumber)
-//                .url("http://192.168.50.181:8081")
+                .url(OkHttpUtils.DOMAIN + "user/contactsLogin.do")
+//                .url("http://192.168.50.181:8087/login")
+                .post(body)
                 .build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {

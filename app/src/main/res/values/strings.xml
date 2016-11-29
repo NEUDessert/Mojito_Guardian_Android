@@ -15,4 +15,5 @@
 	<string name="loading">加载中&#8230;</string>
 	<string name="contentTitle">详细信息</string>
 	<string name="timeTitle">时间</string>
+	<string name="guardian">监护端</string>
 </resources>
