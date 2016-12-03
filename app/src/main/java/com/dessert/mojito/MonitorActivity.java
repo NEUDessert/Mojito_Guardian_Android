@@ -67,7 +67,7 @@ public class MonitorActivity extends Activity {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            handler.postDelayed(this, 1000);
+//            handler.postDelayed(this, 5000);
             Log.i("REQUEST", "123");
             final Request requestPos = new Request.Builder()
                     .url(OkHttpUtils.DOMAIN + "user/getLocation.do")
@@ -83,11 +83,13 @@ public class MonitorActivity extends Activity {
                 public void onResponse(Call call, Response response) throws IOException {
                     try {
                         JSONObject result = new JSONObject(response.body().string());
-                        locX = Double.parseDouble(result.get("locX").toString());
-                        locY = Double.parseDouble(result.get("locY").toString());
-                        Message message = new Message();
-                        message.what = GET_LOCATION;
-                        handler.sendMessage(message);
+                        if(result.getString("error").equals("0")) {
+                            locX = Double.parseDouble(result.get("locX").toString());
+                            locY = Double.parseDouble(result.get("locY").toString());
+                            Message message = new Message();
+                            message.what = GET_LOCATION;
+                            handler.sendMessage(message);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -181,7 +183,7 @@ public class MonitorActivity extends Activity {
                 }
             }
         });
-        handler.postDelayed(runnable, 1000);
+//        handler.postDelayed(runnable, 5000);
     }
 
     @Override
@@ -189,7 +191,7 @@ public class MonitorActivity extends Activity {
         if(mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
-        handler.removeCallbacks(runnable);
+//        handler.removeCallbacks(runnable);
         super.onDestroy();
         mMapView.onDestroy();
     }
