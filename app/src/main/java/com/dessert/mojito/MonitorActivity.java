@@ -300,9 +300,9 @@ public class MonitorActivity extends Activity {
                         if (mEditor.clear().commit()) {
                             Intent intent = new Intent();
                             intent.setClass(MonitorActivity.this, LoginActivity.class);
+                            JPushInterface.stopPush(getApplicationContext());
                             MonitorActivity.this.startActivity(intent);
                             MonitorActivity.this.finish();
-                            JPushInterface.stopPush(getApplicationContext());
                         }
                     } else {
                         Looper.prepare();
