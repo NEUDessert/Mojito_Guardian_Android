@@ -15,7 +15,7 @@ import java.util.List;
  */
 
 public class OkHttpUtils {
-    public static String DOMAIN = "http://192.168.50.183:8082/Mojito/";
+    public static String DOMAIN = "http://192.168.50.198:8082/Mojito/";
     private OkHttpClient mOkHttpClient;
     private static OkHttpUtils mOkHttpUtils;
 

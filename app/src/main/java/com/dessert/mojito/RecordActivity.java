@@ -44,7 +44,7 @@ public class RecordActivity extends Activity {
         recordList = (ListView)findViewById(R.id.recordList);
         mOkHttpClient = OkHttpUtils.getInstance().getOkHttpClient();
         Request request = new Request.Builder()
-                .url("http://192.168.50.197:8082/Mojito/user/getAllAlert.do")
+                .url(OkHttpUtils.DOMAIN + "user/getAllAlert.do")
                 .build();
         Call call = mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {

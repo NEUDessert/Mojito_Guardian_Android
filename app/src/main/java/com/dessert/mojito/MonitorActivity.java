@@ -36,6 +36,7 @@ public class MonitorActivity extends Activity {
     private static final int PUSH_RECEIVED = 0;
     private static final int GET_BASIC_INFO = 1;
     private static final int GET_LOCATION = 2;
+    private static final int GET_HEART_RATE = 3;
     private TextView nameTextView, statusTextView, rateTextView, recordTextView;
     private String nameText, statusText, rateText, recordText;
     private AMap aMap;
@@ -61,40 +62,47 @@ public class MonitorActivity extends Activity {
             if(message.what == GET_LOCATION) {
                 setLocation(locX, locY);
             }
+            if(message.what == GET_HEART_RATE) {
+                rateTextView.setText(rateText);
+            }
         }
     };
 
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-//            handler.postDelayed(this, 5000);
+            handler.postDelayed(this, 10000);
             Log.i("REQUEST", "123");
-            final Request requestPos = new Request.Builder()
-                    .url(OkHttpUtils.DOMAIN + "user/getLocation.do")
+            final Request requestRate = new Request.Builder()
+                    .url(OkHttpUtils.DOMAIN + "user/getHeartRate.do")
                     .build();
-            Call callPos = mOkHttpClient.newCall(requestPos);
-            callPos.enqueue(new Callback() {
+            Call callRate = mOkHttpClient.newCall(requestRate);
+            callRate.enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    e.printStackTrace();
+                    Looper.prepare();
+                    Toast.makeText(getApplicationContext(), "无法连接到服务器。", Toast.LENGTH_LONG ).show();
+                    Looper.loop();
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     try {
                         JSONObject result = new JSONObject(response.body().string());
-                        if(result.getString("error").equals("0")) {
-                            locX = Double.parseDouble(result.get("locX").toString());
-                            locY = Double.parseDouble(result.get("locY").toString());
-                            Message message = new Message();
-                            message.what = GET_LOCATION;
-                            handler.sendMessage(message);
-                        }
+                        rateText = getResources().getString(R.string.rate_text);
+                        rateText = String.format(rateText, Integer.parseInt(result.get("heartRate").toString()));
+                        Message message = new Message();
+                        message.what = GET_HEART_RATE;
+                        handler.sendMessage(message);
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Looper.prepare();
+                        Toast.makeText(getApplicationContext(), "Internal Error", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
                     }
                 }
             });
+
         }
     };
 
@@ -183,7 +191,35 @@ public class MonitorActivity extends Activity {
                 }
             }
         });
-//        handler.postDelayed(runnable, 5000);
+        final Request requestPos = new Request.Builder()
+                .url(OkHttpUtils.DOMAIN + "user/getLocation.do")
+                .build();
+        Call callPos = mOkHttpClient.newCall(requestPos);
+        callPos.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    String res = response.body().string();
+                    Log.i("RES", res);
+                    JSONObject result = new JSONObject(res);
+                    if(result.getString("error").equals("0")) {
+                        locX = Double.parseDouble(result.get("locX").toString());
+                        locY = Double.parseDouble(result.get("locY").toString());
+                        Message message = new Message();
+                        message.what = GET_LOCATION;
+                        handler.sendMessage(message);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        handler.postDelayed(runnable, 10000);
     }
 
     @Override
@@ -191,7 +227,7 @@ public class MonitorActivity extends Activity {
         if(mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
-//        handler.removeCallbacks(runnable);
+        handler.removeCallbacks(runnable);
         super.onDestroy();
         mMapView.onDestroy();
     }
@@ -226,7 +262,7 @@ public class MonitorActivity extends Activity {
                 position(latLng).
                 title("用户当前位置"));
         aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
-        aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
         mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setZoomPosition(0);
         mUiSettings.setScaleControlsEnabled(true);
